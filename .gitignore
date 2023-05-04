@@ -1,0 +1,21 @@
+# Flask
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.bak
+*.swp
+*.db
+*.sqlite3
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+*.log
+*.pydevproject
