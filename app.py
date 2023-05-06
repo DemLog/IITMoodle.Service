@@ -44,17 +44,17 @@ def get_user_data(username, password):
 
 def get_user_details(user_session):
     params = {
-        'first_name': None,
-        'last_name': None,
+        'firstName': None,
+        'lastName': None,
         'patronymic': 'Отчество',
         'email': 'Адрес электронной почты',
         'country': 'Страна',
         'city': 'Город',
         'status': 'Статус',
-        'study_group': 'Учебная группа',
+        'studyGroup': 'Учебная группа',
         'direction': 'Направление обучения',
         'profile': 'Профиль',
-        'form_study': 'Форма обучения'
+        'formStudy': 'Форма обучения'
     }
 
     user = user_session.get('https://eu.iit.csu.ru/user/profile.php')
@@ -62,17 +62,21 @@ def get_user_details(user_session):
 
     # Получение имени и фамилии
     full_name = user_data.find('div', {'class': 'page-header-headings'}).find('h1').contents
-    params['last_name'], params['first_name'] = full_name[0].split(' ')
+    params['last_name'], params['first_name'] = full_name[0].text.split(' ')
 
     detailed_info = user_data.find('div', {'class': 'profile_tree'}).find('section').find('ul').find_all('dd')
     detailed_info_header = user_data.find('div', {'class': 'profile_tree'}).find('section').find('ul').find_all('dt')
     for key, value in params.items():
+        found = False
         for x in range(0, len(detailed_info_header)):
             if detailed_info_header[x].contents[0] == value:
+                found = True
                 if key == 'email':
                     params[key] = detailed_info[x].find('a').contents[0]
                 else:
                     params[key] = detailed_info[x].contents[0].strip()
+        if not found:
+            params[key] = None
 
     return params
 
