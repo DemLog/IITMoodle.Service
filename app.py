@@ -52,17 +52,13 @@ def get_user_details(user_session):
         'city': 'Город',
         'status': 'Статус',
         'studyGroup': 'Учебная группа',
-        'direction': 'Направление обучения',
+        'studyDirection': 'Направление обучения',
         'profile': 'Профиль',
         'formStudy': 'Форма обучения'
     }
 
     user = user_session.get('https://eu.iit.csu.ru/user/profile.php')
     user_data = BeautifulSoup(user.text, 'lxml')
-
-    # Получение имени и фамилии
-    full_name = user_data.find('div', {'class': 'page-header-headings'}).find('h1').contents
-    params['last_name'], params['first_name'] = full_name[0].text.split(' ')
 
     detailed_info = user_data.find('div', {'class': 'profile_tree'}).find('section').find('ul').find_all('dd')
     detailed_info_header = user_data.find('div', {'class': 'profile_tree'}).find('section').find('ul').find_all('dt')
@@ -77,6 +73,10 @@ def get_user_details(user_session):
                     params[key] = detailed_info[x].contents[0].strip()
         if not found:
             params[key] = None
+
+    # Получение имени и фамилии
+    full_name = user_data.find('div', {'class': 'page-header-headings'}).find('h1').contents
+    params['lastName'], params['firstName'] = full_name[0].text.split(' ')
 
     return params
 
